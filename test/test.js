@@ -189,3 +189,13 @@ test('error if no binary is found and no source is provided', function (t) {
 		t.assert(err.message === 'No binary found matching your system. It\'s probably not supported.', err.message);
 	});
 });
+
+test('can use a system binary if found in PATH', async t => {
+  const bin = new Fn()
+    .dest(tempfile())
+    .use(process.platform === 'win32' ? 'node.exe' : 'node');
+
+  await pify(bin.run.bind(bin))();
+
+  t.true(await pathExists(bin.path()));
+});
